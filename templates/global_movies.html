@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .header-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; gap: 1.5rem; flex-wrap: wrap; }
+    
+    /* Szklana wyszukiwarka-pastylka */
+    .search-form { 
+        display: flex; gap: 0.4rem; 
+        background: rgba(255,255,255,0.5); 
+        padding: 0.4rem; 
+        border-radius: 50px; /* PASTYLKA */
+        border: 1px solid rgba(255,255,255,0.8); 
+        width: 100%; max-width: 400px; 
+        align-items: center; 
+        backdrop-filter: blur(10px);
+    }
+    .search-input { 
+        flex: 1; border: none; background: transparent; 
+        padding: 0.6rem 1.5rem; outline: none; 
+        font-size: 0.95rem; color: var(--text); font-weight: 500; 
+    }
+    .search-btn { 
+        background: var(--primary); color: white; border: none; 
+        border-radius: 50px; /* PASTYLKA */
+        padding: 0.6rem 1.5rem; font-weight: 700; cursor: pointer; transition: 0.2s; 
+    }
+    .search-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+    
+    .clear-btn { color: #FF3B30; font-weight: 700; text-decoration: none; padding: 0 1rem; font-size: 0.85rem; }
+
+    /* Tabela */
+    .table-container { padding: 0.8rem; border-radius: 28px; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    th { padding: 0.5rem 1.8rem; font-size: 0.7rem; color: #8E8E93; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em; }
+    
+    tr.movie-row td { 
+        background: rgba(255,255,255,0.4); 
+        padding: 1.3rem 1.8rem; 
+        border-top: 1px solid rgba(255,255,255,0.7); 
+        border-bottom: 1px solid rgba(255,255,255,0.7); 
+        transition: 0.3s;
+        vertical-align: middle;
+    }
+    tr.movie-row td:first-child { border-left: 1px solid rgba(255,255,255,0.7); border-radius: 20px 0 0 20px; }
+    tr.movie-row td:last-child { border-right: 1px solid rgba(255,255,255,0.7); border-radius: 0 20px 20px 0; }
+    tr.movie-row:hover td { background: rgba(255,255,255,0.8); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
+    
+    .badge { padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.7rem; font-weight: 800; }
+    .badge-owned { background: #E2F5EA; color: #248A54; }
+    .badge-added { background: #E8E8F5; color: #5E5CE6; }
+    
+    .add-btn { 
+        background: #34C759; 
+        color: white; 
+        padding: 0.6rem 1.4rem; 
+        border: none; 
+        border-radius: 50px; 
+        font-weight: 700; 
+        font-size: 0.85rem;
+        cursor: pointer; 
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .add-btn:hover { background: #31B754; transform: scale(1.05); }
+    .add-btn:disabled { background: #D0D0D0; cursor: not-allowed; transform: none; }
+    
+    .movie-title { color: #1C1C1E; font-weight: 800; text-decoration: none; font-size: 1.1rem; }
+    .movie-director { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+</style>
+
+<div class="header-container">
+    <div>
+        <h2 style="font-size: 2.5rem;">🎬 Discover Movies</h2>
+        <p style="color: var(--text-muted); font-weight: 500;">{{ global_movies.count }} movies available</p>
+    </div>
+    
+    <form class="search-form" method="GET">
+        <input type="text" name="q" class="search-input" placeholder="Search movies..." value="{{ search_query|default:'' }}">
+        {% if search_query %}
+            <a href="{% url 'global_movies' %}" class="clear-btn">✕</a>
+        {% endif %}
+        <button type="submit" class="search-btn">Find</button>
+    </form>
+</div>
+
+{% if global_movies %}
+<div class="table-container glass-panel">
+    <table>
+        <thead>
+            <tr>
+                <th>Movie Title</th>
+                <th>Year</th>
+                <th>Genre</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in global_movies %}
+            <tr class="movie-row">
+                <td>
+                    <div class="movie-title">{{ movie.title }}</div>
+                    {% if movie.director %}
+                    <div class="movie-director">{{ movie.director }}</div>
+                    {% endif %}
+                </td>
+                <td style="font-weight: 600;">{{ movie.year|default:"-" }}</td>
+                <td><span style="font-size: 0.85rem; font-weight: 600;">{{ movie.genre|default:"-" }}</span></td>
+                <td>
+                    {% if movie.id in user_movie_ids %}
+                        <span class="badge badge-added">✓ ADDED</span>
+                    {% else %}
+                        <span style="font-size: 0.75rem; color: #8E8E93;">Available</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if request.user.is_authenticated %}
+                        {% if movie.id not in user_movie_ids %}
+                            <a href="{% url 'add_global_movie' movie.id %}" class="add-btn">+ Add</a>
+                        {% else %}
+                            <button class="add-btn" disabled>Already Added</button>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}" class="add-btn">Login</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="glass-panel" style="text-align: center; padding: 3rem;">
+    <h3 style="color: var(--text-muted); margin-bottom: 1rem;">No movies found</h3>
+    {% if search_query %}
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Try a different search term</p>
+        <a href="{% url 'global_movies' %}" class="btn">Back to all movies</a>
+    {% else %}
+        <p style="color: var(--text-muted);">Add some movies to the library first</p>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

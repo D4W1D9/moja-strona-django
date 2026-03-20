@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .header-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; gap: 1.5rem; }
+    
+    /* Szklana wyszukiwarka-pastylka */
+    .search-form { 
+        display: flex; gap: 0.4rem; 
+        background: rgba(255,255,255,0.5); 
+        padding: 0.4rem; 
+        border-radius: 50px; /* PASTYLKA */
+        border: 1px solid rgba(255,255,255,0.8); 
+        width: 100%; max-width: 400px; 
+        align-items: center; 
+        backdrop-filter: blur(10px);
+    }
+    .search-input { 
+        flex: 1; border: none; background: transparent; 
+        padding: 0.6rem 1.5rem; outline: none; 
+        font-size: 0.95rem; color: var(--text); font-weight: 500; 
+    }
+    .search-btn { 
+        background: var(--primary); color: white; border: none; 
+        border-radius: 50px; /* PASTYLKA */
+        padding: 0.6rem 1.5rem; font-weight: 700; cursor: pointer; transition: 0.2s; 
+    }
+    .search-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+    
+    .clear-btn { color: #FF3B30; font-weight: 700; text-decoration: none; padding: 0 1rem; font-size: 0.85rem; }
+
+    /* Tabela */
+    .table-container { padding: 0.8rem; border-radius: 28px; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    th { padding: 0.5rem 1.8rem; font-size: 0.7rem; color: #8E8E93; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em; }
+    
+    tr.movie-row td { 
+        background: rgba(255,255,255,0.4); 
+        padding: 1.3rem 1.8rem; 
+        border-top: 1px solid rgba(255,255,255,0.7); 
+        border-bottom: 1px solid rgba(255,255,255,0.7); 
+        transition: 0.3s; 
+    }
+    tr.movie-row td:first-child { border-left: 1px solid rgba(255,255,255,0.7); border-radius: 20px 0 0 20px; }
+    tr.movie-row td:last-child { border-right: 1px solid rgba(255,255,255,0.7); border-radius: 0 20px 20px 0; }
+    tr.movie-row:hover td { background: rgba(255,255,255,0.8); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
+    
+    .badge { padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.7rem; font-weight: 800; }
+    .badge-owned { background: #E2F5EA; color: #248A54; }
+    .badge-wishlist { background: #FFF4E5; color: #D97706; }
+    
+    .movie-link { color: #1C1C1E; font-weight: 800; text-decoration: none; font-size: 1.1rem; }
+</style>
+
+<div class="header-container">
+    <div>
+        <h2 style="font-size: 2.5rem;">Library</h2>
+        <p style="color: var(--text-muted); font-weight: 500;">{{ movies.count }} movies in your collection</p>
+    </div>
+    
+    <form class="search-form" method="GET">
+        <input type="text" name="q" class="search-input" placeholder="Search by title..." value="{{ search_query|default:'' }}">
+        {% if search_query %}
+            <a href="{% url 'movie_list' %}" class="clear-btn">✕</a>
+        {% endif %}
+        <button type="submit" class="search-btn">Find</button>
+    </form>
+</div>
+
+<div class="table-container glass-panel">
+    <table>
+        <thead>
+            <tr>
+                <th>Movie Title</th>
+                <th>Year</th>
+                <th>Format</th>
+                <th>Status</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in movies %}
+            <tr class="movie-row">
+                <td>
+                    <a href="{% url 'movie_detail' movie.id %}" class="movie-link">{{ movie.title }}</a>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">{{ movie.director }}</div>
+                </td>
+                <td style="font-weight: 600;">{{ movie.year }}</td>
+                <td><span style="font-size: 0.75rem; font-weight: 700; opacity: 0.6;">{{ movie.get_media_type_display }}</span></td>
+                <td>
+                    {% if movie.has_movie %}
+                        <span class="badge badge-owned">OWNED</span>
+                    {% else %}
+                        <span class="badge badge-wishlist">WISHLIST</span>
+                    {% endif %}
+                </td>
+                <td style="font-weight: 800; color: #FF9500;">⭐ {{ movie.rating|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

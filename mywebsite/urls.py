@@ -1,14 +1,15 @@
 from django.contrib import admin
-from django.urls import path
-from . import views
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('o-mnie/', views.o_mnie, name='o_mnie'),
-    path('projekty/', views.projekty, name='projekty'),
-    path('kontakt/', views.kontakt, name='kontakt'),
-    path('design/', views.design, name='design'),
-    path('python-power/', views.python_power, name='python_power'),
-    path('szybki-start/', views.szybki_start, name='szybki_start'),
+    path('', include('movies.urls')),
 ]
+
+if settings.DEBUG:
+    import os
+    static_root = os.path.join(settings.BASE_DIR, 'static')
+    urlpatterns += static(settings.STATIC_URL, document_root=static_root)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieCollector</title>
+    
+    <link rel="icon" type="image/png" href="{% static 'icon.png' %}?v={% now 'U' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'icon.png' %}?v={% now 'U' %}">
+    <link rel="apple-touch-icon" href="{% static 'icon.png' %}?v={% now 'U' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root { 
+            --primary: #5E5CE6; 
+            --primary-hover: #4845D2; 
+            --text: #1C1C1E; 
+            --text-muted: #636366; 
+            --glass-bg: rgba(255, 255, 255, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { 
+            color: var(--text); 
+            min-height: 100vh;
+            background-color: #F2F2F7;
+            background-image: 
+                radial-gradient(at 10% 20%, hsla(28,100%,74%,0.3) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, hsla(189,100%,56%,0.3) 0px, transparent 50%),
+                radial-gradient(at 40% 80%, hsla(355,100%,93%,0.5) 0px, transparent 50%);
+            background-attachment: fixed;
+            padding-top: 90px;
+        }
+        
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* GÓRNE MENU */
+        nav { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 3rem; z-index: 1000;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        nav .brand a { 
+            font-size: 1.4rem; color: #1C1C1E; font-weight: 800; 
+            text-decoration: none; display: flex; align-items: center; 
+            gap: 12px; 
+        }
+        
+        .brand-icon { font-size: 1.6rem; }
+
+        nav .menu-links { display: flex; gap: 0.8rem; align-items: center; }
+        
+        /* LINKI JAKO PASTYLKI */
+        nav .menu-links a { 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            padding: 0.6rem 1.4rem; 
+            border-radius: 50px; 
+            font-weight: 600; 
+            font-size: 0.9rem; 
+            transition: all 0.3s ease; 
+        }
+        nav .menu-links a:hover { color: var(--text); background: rgba(255, 255, 255, 0.6); }
+        nav .menu-links a.active { color: var(--primary); background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        /* PRZYCISK ADD - PASTYLKA */
+        nav .menu-links .nav-add-btn { 
+            background: var(--primary); 
+            color: white !important; 
+            box-shadow: 0 4px 15px rgba(94, 92, 230, 0.2);
+        }
+        nav .menu-links .nav-add-btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(94, 92, 230, 0.3); }
+
+        /* USER INFO SECTION */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .nav-logout-btn {
+            background: rgba(255, 59, 48, 0.1) !important;
+            color: #FF3B30 !important;
+            border: 1px solid rgba(255, 59, 48, 0.2) !important;
+        }
+        
+        .nav-logout-btn:hover {
+            background: rgba(255, 59, 48, 0.2) !important;
+        }
+
+        /* MESSAGES */
+        .messages {
+            margin-bottom: 2rem;
+        }
+        
+        .alert {
+            padding: 1.2rem 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-error {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            color: #C1272D;
+        }
+        
+        .alert-success {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            color: #248A3D;
+        }
+
+        main { padding: 2rem 3rem; width: 100%; max-width: 1300px; margin: 0 auto; }
+        
+        /* GŁÓWNE PRZYCISKI - PASTYLKI */
+        .btn { 
+            background: var(--primary); color: white; padding: 0.8rem 2.2rem; 
+            border: none; border-radius: 50px; 
+            cursor: pointer; text-decoration: none; font-weight: 700; 
+            font-size: 0.95rem; transition: all 0.3s ease; 
+            display: inline-block; text-align: center;
+        }
+        .btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 25px rgba(94, 92, 230, 0.3); }
+        .btn:active { transform: translateY(0); }
+
+        /* PRZYWRÓCONE STYLE FORMULARZY */
+        .form-control { 
+            width: 100%; padding: 1rem; 
+            background: rgba(255,255,255,0.6); 
+            border: 1px solid rgba(255,255,255,0.8); 
+            border-radius: 16px; 
+            margin-top: 0.4rem; 
+            font-size: 0.95rem; 
+            transition: 0.3s; 
+        }
+        .form-control:focus { outline: none; background: white; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(94,92,230,0.1); }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="brand">
+            <a href="{% url 'movie_list' %}">
+                <span class="brand-icon">🎬</span> 
+                MovieCollector
+            </a>
+        </div>
+        <div class="menu-links">
+            <a href="{% url 'movie_list' %}" class="{% if request.resolver_match.url_name == 'movie_list' %}active{% endif %}">Dashboard</a>
+            <a href="{% url 'global_movies' %}" class="{% if request.resolver_match.url_name == 'global_movies' %}active{% endif %}">Discover</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'add_movie' %}" class="nav-add-btn">+ Add Movie</a>
+                <div class="user-info">
+                    <span class="user-name">👤 {{ user.username }}</span>
+                    <a href="{% url 'logout' %}" class="nav-logout-btn">Logout</a>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-add-btn">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    <main>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
