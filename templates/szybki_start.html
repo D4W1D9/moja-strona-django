@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moja Aplikacja - Podstrona</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --bg-color: #F3F4F6;
+            --text-color: #1F2937;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- MENU GÓRNE (Zostaje takie samo) --- */
+        nav {
+            background-color: var(--card-bg);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h1 {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        /* --- SEKCJA GŁÓWNA (PUSTA) --- */
+        main {
+            flex: 1;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* --- STOPKA (Zostaje taka sama) --- */
+        footer {
+            background-color: #111827;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="{% url 'home' %}" style="text-decoration: none;"><h1>MojePortfolio</h1></a>
+        <ul>
+            <li><a href="{% url 'o_mnie' %}">O mnie</a></li>
+            <li><a href="{% url 'projekty' %}">Projekty</a></li>
+            <li><a href="{% url 'kontakt' %}">Kontakt</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Nagłówek sekcji</h2>
+        <p>Start</p>
+        <br>
+        <a href="{% url 'home' %}" style="color: var(--primary);">← Wróć do strony głównej</a>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Moja Aplikacja. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+</body>
+</html>
