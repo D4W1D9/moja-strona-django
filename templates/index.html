@@ -84,17 +84,24 @@
             flex-wrap: wrap;
         }
 
+        /* Styl dla linku owijającego kartę */
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
         .card {
             background-color: var(--card-bg);
             padding: 2rem;
             border-radius: 12px;
             width: 300px;
+            height: 100%;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
 
-        /* Fajne przejście po najechaniu myszką */
         .card:hover {
             transform: translateY(-10px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
@@ -115,7 +122,6 @@
             margin-top: auto;
         }
 
-        /* --- ANIMACJE --- */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -125,11 +131,11 @@
 <body>
 
     <nav>
-        <h1>MojePortfolio</h1>
+        <a href="{% url 'home' %}" style="text-decoration: none;"><h1>MojePortfolio</h1></a>
         <ul>
-            <li><a href="#">O mnie</a></li>
-            <li><a href="#">Projekty</a></li>
-            <li><a href="#">Kontakt</a></li>
+            <li><a href="{% url 'o_mnie' %}">O mnie</a></li>
+            <li><a href="{% url 'projekty' %}">Projekty</a></li>
+            <li><a href="{% url 'kontakt' %}">Kontakt</a></li>
         </ul>
     </nav>
 
@@ -140,12 +146,26 @@
         </div>
 
         <div class="cards-container">
-            {% for card in cards %}
-            <div class="card">
-                <h3>{{ card.title }}</h3>
-                <p>{{ card.desc }}</p>
-            </div>
-            {% endfor %}
+            <a href="{% url 'design' %}" class="card-link">
+                <div class="card">
+                    <h3>Nowoczesny Design</h3>
+                    <p>Czysty kod i świetne animacje.</p>
+                </div>
+            </a>
+
+            <a href="{% url 'python_power' %}" class="card-link">
+                <div class="card">
+                    <h3>Moc Pythona</h3>
+                    <p>Backend napędzany przez Django.</p>
+                </div>
+            </a>
+
+            <a href="{% url 'szybki_start' %}" class="card-link">
+                <div class="card">
+                    <h3>Szybki Start</h3>
+                    <p>Gotowe do wdrożenia w kilka minut.</p>
+                </div>
+            </a>
         </div>
     </main>
 

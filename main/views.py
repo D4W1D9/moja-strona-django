@@ -1,9 +1,22 @@
 from django.shortcuts import render
 
 def home(request):
-    cards = [
-        {"title": "Nowoczesny Design", "desc": "Czysty kod i świetne animacje."},
-        {"title": "Moc Pythona", "desc": "Backend napędzany przez Django."},
-        {"title": "Szybki Start", "desc": "Gotowe do wdrożenia w kilka minut."}
-    ]
-    return render(request, 'index.html', {'cards': cards})
+    return render(request, 'index.html')
+
+def o_mnie(request):
+    return render(request, 'o_mnie.html')
+
+def projekty(request):
+    return render(request, 'projekty.html')
+
+def kontakt(request):
+    return render(request, 'kontakt.html')
+
+def design(request):
+    return render(request, 'design.html')
+
+def python_power(request):
+    return render(request, 'python_power.html')
+
+def szybki_start(request):
+    return render(request, 'szybki_start.html')
