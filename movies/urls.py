@@ -1,20 +1,18 @@
 from django.urls import path
+from django.contrib.auth.views import LoginView, LogoutView
 from . import views
 
 urlpatterns = [
-    # Auth URLs
-    path('login/', views.login_view, name='login'),
-    path('register/', views.register, name='register'),
-    path('logout/', views.logout_view, name='logout'),
-    
-    # Movie URLs
     path('', views.movie_list, name='movie_list'),
-    path('movie/<int:movie_id>/', views.movie_detail, name='movie_detail'),
+    path('movie/<int:pk>/', views.movie_detail, name='movie_detail'),
     path('add/', views.add_movie, name='add_movie'),
-    path('edit/<int:movie_id>/', views.edit_movie, name='edit_movie'),
-    path('delete/<int:movie_id>/', views.delete_movie, name='delete_movie'),
+    path('edit/<int:pk>/', views.edit_movie, name='edit_movie'),
+    path('delete/<int:pk>/', views.delete_movie, name='delete_movie'),
+    path('discover/', views.global_movies, name='global_movies'),
+    path('add-from-global/<int:movie_id>/', views.add_global_movie, name='add_global_movie'),
+    path('add-wishlist/<int:movie_id>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('delete-from-collection/<int:movie_id>/', views.delete_from_catalog, name='delete_from_catalog'),
     
-    # Global Movies URLs
-    path('discover/', views.global_movies_list, name='global_movies'),
-    path('add-from-global/<int:global_movie_id>/', views.add_global_movie_to_collection, name='add_global_movie'),
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 ]
